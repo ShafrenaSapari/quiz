@@ -43,23 +43,7 @@ interface SecretDrink {
   image: string;
 }
 
-const BASE_URL = "https://limsimi-quiz.pages.dev";
-
-const endingImage = `${BASE_URL}/Questions/ending_uncle.webp`;
-const secretImage = `${BASE_URL}/Questions/secret.webp`;
-
-const questionImages: string[] = [
-  `${BASE_URL}/Questions/mystical_shop.webp`,
-  `${BASE_URL}/Questions/mahjong_aunties.webp`,
-  `${BASE_URL}/Questions/merlion_quiz.webp`,
-  `${BASE_URL}/Questions/mrt_choice.webp`,
-  `${BASE_URL}/Questions/supertrees.webp`,
-  `${BASE_URL}/Questions/haji_lane.webp`,
-  `${BASE_URL}/Questions/ancient_recipes.webp`,
-  `${BASE_URL}/Questions/mystical_lab.webp`,
-  `${BASE_URL}/Questions/orchard_road.webp`,
-  `${BASE_URL}/Questions/floating_crystals.webp`
-];
+const PLACEHOLDER_IMAGE = "/copyright-placeholder.svg";
 
 const questions: Question[] = [
   {
@@ -231,86 +215,90 @@ const questions: Question[] = [
   }
 ];
 
+const questionImages = questions.map(() => PLACEHOLDER_IMAGE);
+const endingImage = PLACEHOLDER_IMAGE;
+const secretImage = PLACEHOLDER_IMAGE;
+
 const resultMap = {
   ENTJ: {
     name: "Teh C Kosong",
-    image: `${BASE_URL}/DrinkCards/teh_c_kosong.png`,
-    thumbnail: `${BASE_URL}/Thumbnails/teh_c_kosong_thumbnail.webp`
+    image: PLACEHOLDER_IMAGE,
+    thumbnail: PLACEHOLDER_IMAGE
   },
   INTJ: {
     name: "Kopi Gao",
-    image: `${BASE_URL}/DrinkCards/kopi_gao.png`,
-    thumbnail: `${BASE_URL}/Thumbnails/kopi_gao_thumbnail.webp`
+    image: PLACEHOLDER_IMAGE,
+    thumbnail: PLACEHOLDER_IMAGE
   },
   ENTP: {
     name: "Soursop Juice",
-    image: `${BASE_URL}/DrinkCards/soursop_juice.png`,
-    thumbnail: `${BASE_URL}/Thumbnails/soursop_juice_thumbnail.webp`
+    image: PLACEHOLDER_IMAGE,
+    thumbnail: PLACEHOLDER_IMAGE
   },
   INTP: {
     name: "Black & White",
-    image: `${BASE_URL}/DrinkCards/black_white_drink.png`,
-    thumbnail: `${BASE_URL}/Thumbnails/black_white_drink_thumbnail.webp`
+    image: PLACEHOLDER_IMAGE,
+    thumbnail: PLACEHOLDER_IMAGE
   },
   ENFJ: {
     name: "Barley Water",
-    image: `${BASE_URL}/DrinkCards/barley_water.png`,
-    thumbnail: `${BASE_URL}/Thumbnails/barley_water_thumbnail.webp`
+    image: PLACEHOLDER_IMAGE,
+    thumbnail: PLACEHOLDER_IMAGE
   },
   INFJ: {
     name: "Chrysanthemum Tea",
-    image: `${BASE_URL}/DrinkCards/chrysanthemum_tea.png`,
-    thumbnail: `${BASE_URL}/Thumbnails/chrysanthemum_tea_thumbnail.webp`
+    image: PLACEHOLDER_IMAGE,
+    thumbnail: PLACEHOLDER_IMAGE
   },
   ENFP: {
     name: "Milo Dinosaur",
-    image: `${BASE_URL}/DrinkCards/milo_dinosaur.png`,
-    thumbnail: `${BASE_URL}/Thumbnails/milo_dinosaur_thumbnail.webp`
+    image: PLACEHOLDER_IMAGE,
+    thumbnail: PLACEHOLDER_IMAGE
   },
   INFP: {
     name: "Bandung",
-    image: `${BASE_URL}/DrinkCards/bandung.png`,
-    thumbnail: `${BASE_URL}/Thumbnails/bandung_thumbnail.webp`
+    image: PLACEHOLDER_IMAGE,
+    thumbnail: PLACEHOLDER_IMAGE
   },
   ESFJ: {
     name: "Honey Lemon",
-    image: `${BASE_URL}/DrinkCards/honey_lemon.png`,
-    thumbnail: `${BASE_URL}/Thumbnails/honey_lemon_thumbnail.webp`
+    image: PLACEHOLDER_IMAGE,
+    thumbnail: PLACEHOLDER_IMAGE
   },
   ISFJ: {
     name: "Soya Milk",
-    image: `${BASE_URL}/DrinkCards/soya_milk.png`,
-    thumbnail: `${BASE_URL}/Thumbnails/soya_milk_thumbnail.webp`
+    image: PLACEHOLDER_IMAGE,
+    thumbnail: PLACEHOLDER_IMAGE
   },
   ESTJ: {
     name: "Lime Juice",
-    image: `${BASE_URL}/DrinkCards/lime_juice.png`,
-    thumbnail: `${BASE_URL}/Thumbnails/lime_juice_thumbnail.webp`
+    image: PLACEHOLDER_IMAGE,
+    thumbnail: PLACEHOLDER_IMAGE
   },
   ISTJ: {
     name: "Kopi O Kosong",
-    image: `${BASE_URL}/DrinkCards/kopi_o_kosong.png`,
-    thumbnail: `${BASE_URL}/Thumbnails/kopi_o_kosong_thumbnail.webp`
+    image: PLACEHOLDER_IMAGE,
+    thumbnail: PLACEHOLDER_IMAGE
   },
   ESTP: {
     name: "Coconut Shake",
-    image: `${BASE_URL}/DrinkCards/coconut_shake.png`,
-    thumbnail: `${BASE_URL}/Thumbnails/coconut_shake_thumbnail.webp`
+    image: PLACEHOLDER_IMAGE,
+    thumbnail: PLACEHOLDER_IMAGE
   },
   ISTP: {
     name: "Sugarcane Juice",
-    image: `${BASE_URL}/DrinkCards/sugarcane_juice.png`,
-    thumbnail: `${BASE_URL}/Thumbnails/sugarcane_juice_thumbnail.webp`
+    image: PLACEHOLDER_IMAGE,
+    thumbnail: PLACEHOLDER_IMAGE
   },
   ESFP: {
     name: "Bubble Tea",
-    image: `${BASE_URL}/DrinkCards/bubble_tea.png`,
-    thumbnail: `${BASE_URL}/Thumbnails/bubble_tea_thumbnail.webp`
+    image: PLACEHOLDER_IMAGE,
+    thumbnail: PLACEHOLDER_IMAGE
   },
   ISFP: {
     name: "Avocado Shake",
-    image: `${BASE_URL}/DrinkCards/avocado_shake.png`,
-    thumbnail: `${BASE_URL}/Thumbnails/avocado_shake_thumbnail.webp`
+    image: PLACEHOLDER_IMAGE,
+    thumbnail: PLACEHOLDER_IMAGE
   }
 } as const satisfies Record<string, Drink>;
 
@@ -319,11 +307,11 @@ type MbtiCode = keyof typeof resultMap;
 const secretResults: SecretDrink[] = [
   {
     name: "Strawberry Matcha Latte",
-    image: `${BASE_URL}/DrinkCards/strawberry_matcha.png`
+    image: PLACEHOLDER_IMAGE
   },
   {
     name: "Butterfly Pea Passionfruit Tea",
-    image: `${BASE_URL}/DrinkCards/butterfly_pea.png`
+    image: PLACEHOLDER_IMAGE
   }
 ];
 
@@ -785,14 +773,14 @@ body {
 }
 
 .quiz-app.home-page {
-  background-image: url("/landing-page.webp");
+  background-image: url("/copyright-placeholder.svg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
 .quiz-app.home-page.secret-home-page {
-  background-image: url("/landing-page-2.webp");
+  background-image: url("/copyright-placeholder.svg");
 }
 
 .star-field {
