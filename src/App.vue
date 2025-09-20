@@ -65,8 +65,7 @@ const questionImages: string[] = [
 
 const questions: Question[] = [
   {
-    question:
-      'When you receive your monthly pay, what’s the FIRST thing you usually do?"',
+    question: "When you receive your monthly pay, what’s the FIRST thing you usually do?",
     choices: [
       "Set aside savings immediately.",
       "Treat yourself to something nice.",
@@ -76,8 +75,12 @@ const questions: Question[] = [
       "Think of ways to grow it with side hustles."
     ],
     weights: [
-      { extrovertScore: 3, perceivingScore: 1 },
-      { introvertScore: 3, judgingScore: 1 }
+      { judgingScore: 2, sensingScore: 1 },
+      { extrovertScore: 2, feelingScore: 1 },
+      { judgingScore: 1, thinkingScore: 1, perceivingScore: 1 },
+      { intuitionScore: 2, feelingScore: 1 },
+      { introvertScore: 2, sensingScore: 1 },
+      { extrovertScore: 1, intuitionScore: 1, perceivingScore: 1 }
     ]
   },
   {
@@ -92,8 +95,12 @@ const questions: Question[] = [
       "Use it as capital for a small project or hustle."
     ],
     weights: [
-      { sensingScore: 2, feelingScore: 1 },
-      { intuitionScore: 2, thinkingScore: 1 }
+      { sensingScore: 2, judgingScore: 1 },
+      { extrovertScore: 2, perceivingScore: 1 },
+      { thinkingScore: 2, judgingScore: 1 },
+      { intuitionScore: 2, feelingScore: 1 },
+      { introvertScore: 2, sensingScore: 1 },
+      { extrovertScore: 1, thinkingScore: 1, perceivingScore: 1 }
     ]
   },
   {
