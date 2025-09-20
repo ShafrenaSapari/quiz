@@ -17,7 +17,6 @@ type ScoreState = Record<ScoreKey, number>;
 
 type View =
   | "home"
-  | "intro"
   | "quiz"
   | "ending"
   | "results"
@@ -46,7 +45,6 @@ interface SecretDrink {
 
 const BASE_URL = "https://limsimi-quiz.pages.dev";
 
-const introImage = `${BASE_URL}/Questions/uncle_wink.webp`;
 const endingImage = `${BASE_URL}/Questions/ending_uncle.webp`;
 const secretImage = `${BASE_URL}/Questions/secret.webp`;
 
@@ -401,11 +399,6 @@ function startQuiz() {
   resetScores();
   questionIndex.value = 0;
   currentMbti.value = null;
-  view.value = "intro";
-}
-
-function beginJourney() {
-  questionIndex.value = 0;
   view.value = "quiz";
 }
 
@@ -578,19 +571,6 @@ onBeforeUnmount(() => {
         <button class="btn main-button" @click="startSecretJourney">Start Secret Journey</button>
       </template>
 
-      <!-- Intro scene -->
-      <template v-else-if="view === 'intro'">
-        <div class="quiz-container">
-          <div class="question">
-            You're walking past your favorite hawker center when you notice an uncle at a mysterious stall you've never seen before. His sign reads "Mystical Drinks - Find Your True Taste". As you approach closer, he winks and the world shimmers...
-          </div>
-          <img :src="introImage" alt="Uncle winking at mysterious stall" class="question-image" />
-          <div class="choices-container">
-            <button class="btn whoosh-button" @click="beginJourney">Begin Journey!</button>
-          </div>
-        </div>
-      </template>
-
       <!-- Quiz -->
       <template v-else-if="view === 'quiz'">
         <div class="quiz-container">
@@ -734,7 +714,7 @@ onBeforeUnmount(() => {
         </div>
       </template>
     </div>
-
+<!-----
     <footer class="fun-footer">
       <p>
         <a href="https://coff.ee/tyeckh" target="_blank" rel="noopener noreferrer">Support with a kopi</a>
@@ -743,6 +723,7 @@ onBeforeUnmount(() => {
         © 2025 LimSimi.
       </p>
     </footer>
+    --->
 
     <div v-if="secretPromptOpen" class="secret-modal">
       <div class="secret-card">
@@ -798,7 +779,7 @@ body {
   align-items: center;
   justify-content: center;
   position: relative;
-  background: linear-gradient(135deg, #1a1a3e, #6b5b95 30%, #4a4a7e 70%, #1a1a3e);
+  background: #cdeb53;
   font-family: Nunito, sans-serif;
   overflow-x: hidden;
 }
@@ -1004,12 +985,18 @@ body {
 }
 
 .choices-container {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
   gap: 12px;
   width: 90%;
-  max-width: 400px;
+  max-width: 440px;
   margin-bottom: 20px;
+}
+
+@media (min-width: 600px) {
+  .choices-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .choice {
