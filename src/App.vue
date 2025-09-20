@@ -98,10 +98,14 @@ const questions: Question[] = [
   },
   {
     question:
-      "Following the aunties' directions, you reach Marina Bay where the Merlion statue glows and speaks: \"solve this riddle: A kopitiam uncle has 100 thirsty customers but only 80 cups. How does he handle this?\"",
+      "How do you usually feel about taking financial risks?\"",
     choices: [
-      "Calculate and plan a fair, efficient way to distribute or find alternatives.",
-      "Talk to the customers, some may be ok to wait or share if they feel heard."
+      "Avoid them — safety first.",
+      "Excited — why not try?",
+      "Open, but only with balance.",
+      "Necessary if it gets me closer to my goals.",
+      "Prefer quiet, safe growth.",
+      "Love risks — they mean opportunities.",
     ],
     weights: [
       { thinkingScore: 2, judgingScore: 1 },
@@ -110,10 +114,14 @@ const questions: Question[] = [
   },
   {
     question:
-      'You teleported to a magical MRT train. The announcement says: "Next stop, Your Destiny". Two buttons appear: <Express> and <Scenic Route>',
+      'What does “budgeting” mean to you?',
     choices: [
-      "Express please! I want to reach my destination efficiently.",
-      "Scenic route sounds interesting - let's see where it takes me!"
+      "An essential routine — I follow my budget closely.",
+      "Restrictive — I prefer flexibility.",
+      "A guide, but not too strict.",
+      "A tool to track how close I am to my dreams.",
+      "A quiet discipline I keep to myself.",
+      "A flexible map — I budget, but always leave room for new opportunities."
     ],
     weights: [
       { judgingScore: 2, intuitionScore: 1 },
@@ -122,10 +130,14 @@ const questions: Question[] = [
   },
   {
     question:
-      'The MRT drops you at ethereal Gardens by the Bay, where the Supertrees grow magical fruits. A gardenkeeper asks: "How will you harvest your drink ingredients?"',
+      'When friends describe your money habits, they say you’re…"',
     choices: [
-      "I'll join the group harvest, to share discoveries and learn from others.",
-      "I'll harvest alone to focus deeply and make objective choices."
+      "Steady and disciplined.",
+      "Fun and generous",
+      "Balanced and sensible.",
+      "Ambitious and forward-looking.",
+      "Low-key but dependable.",
+      "Hustling and creative."
     ],
     weights: [
       { extrovertScore: 2, feelingScore: 1 },
@@ -134,10 +146,14 @@ const questions: Question[] = [
   },
   {
     question:
-      "Drawn by whispers from the Supertrees, you step into Haji Lane where glowing murals pulse with hidden flavors, waiting for you to choose the one that speaks to you.",
+      "Your ideal investment style is...",
     choices: [
-      "Let my intuition lead me from mural to mural and see what unfolds.",
-      "Systematically go through each mural to ensure nothing is missed."
+      "Low-risk, steady returns.",
+      "High-risk, instant thrill.",
+      "Balanced portfolio.",
+      "Growth-focused, long-term.",
+      "Conservative, hidden savings with small steps into investing.",
+      "Business ventures, side hustles, quick growth."
     ],
     weights: [
       { perceivingScore: 2, intuitionScore: 1 },
@@ -146,10 +162,14 @@ const questions: Question[] = [
   },
   {
     question:
-      'As you pick your ingredient from the mural, the wall shimmers and you fall through into a mystical kopitiam where an ancient coffee master guards a recipe vault. "Young seeker," he says, "which brewing wisdom calls to you?"',
+      'When it comes to shopping, your approach is:"',
     choices: [
-      "I trust traditional recipes, they've worked for generations and give structure to the process.",
-      "Let's try that experimental fusion technique, I'm curious what new flavours we can invent."
+      "Buy only what I need.",
+      "If I like it, I buy it",
+      "Mix of needs and wants.",
+      "Buy things that remind me of my dreams.",
+      "Prefer not to shop much, I keep it simple.",
+      "Always compare prices and see if I can resell/flip."
     ],
     weights: [
       { sensingScore: 2, judgingScore: 1 },
@@ -158,10 +178,14 @@ const questions: Question[] = [
   },
   {
     question:
-      'The coffee master hands you a golden recipe scroll that transports you to a mystical lab. A voice echoes: "Your drink needs some calibration. How will you choose to find the perfect taste?"',
+      'What motivates you most in money matters?"',
     choices: [
-      "Precise measurements and scientific analysis to achieve perfect balance!",
-      "I'll taste and adjust based on how each sip makes me feel!"
+      "Stability and security.",
+      "Enjoying life today.",
+      "Having balance and peace of mind.",
+      "Building towards a bigger dream.",
+      "Quiet assurance of safety.",
+      "Freedom to chase opportunities."
     ],
     weights: [
       { thinkingScore: 2, judgingScore: 1 },
@@ -169,11 +193,15 @@ const questions: Question[] = [
     ]
   },
   {
-    question:
-      "The lab's portal opens to a floating Orchard Road where recipes are ingrained in the golden scroll you have. How do you want to finalize your perfect drink creation?",
+   question:
+      'If a financial challenge hits you, how do you respond?"',
     choices: [
-      "I want a flexible recipe that lets people improvise and experiment!",
-      "Give me a structured recipe with clear steps and guaranteed results!"
+      "Stick to my savings buffer.",
+      "Panic a bit but figure it out later.",
+      "Re-adjust between savings and investments.",
+      "Think of how it affects my long-term goals.",
+      "Quietly rely on the reserves I’ve built",
+      "Try to create a quick side income to cover it."
     ],
     weights: [
       { perceivingScore: 2, intuitionScore: 1 },
@@ -182,10 +210,14 @@ const questions: Question[] = [
   },
   {
     question:
-      'Emerging from the ceremony, you find yourself in a crystal chamber, where two floating crystals await. A voice echoes: "Choose the crystal that will seal your drink\'s true nature."',
+      'Which local kuih would you reach for at a pasar malam?"',
     choices: [
-      "The steady crystal — timeless and dependable, with grounded flavour.",
-      "The shifting crystal — creative and emotional, always evolving."
+      "Kuih Lapis — comforting, layered, classic",
+      "Ondeh-Ondeh — sweet, surprising, playful.",
+      "Putri Salat — balanced, two flavours in one.",
+      "Putri Ayu — eye-catching, aspirational",
+      "Kuih Dadar — humble, wrapped, underrated.",
+      "Apam Balik — crispy, filled with surprises."
     ],
     weights: [
       { sensingScore: 2, judgingScore: 1 },
@@ -517,11 +549,11 @@ onBeforeUnmount(() => {
       <!-- Home -->
       <template v-if="view === 'home'">
         <header class="header">
-          <h1 class="title" @click="handleTitleClick">LimSimi?</h1>
+          <h1 class="title" @click="handleTitleClick">Kuih-nomics</h1>
         </header>
-        <h2 class="subtitle">Discover your Singaporean Drink!</h2>
+        <h2 class="subtitle">What’s Your Financial Flavour?</h2>
         <h3 class="description">
-          Embark on a magical journey to uncover your perfect Singaporean drink match!
+          Let's masuk dapur and find out which kuih matches<br/> your financial personality!
         </h3>
         <button class="btn main-button" @click="startQuiz">Take the quiz</button>
       </template>
@@ -529,7 +561,7 @@ onBeforeUnmount(() => {
       <!-- Secret landing -->
       <template v-else-if="view === 'secretHome'">
         <header class="header">
-          <h1 class="title" @click="handleTitleClick">LimSimi?</h1>
+          <h1 class="title" @click="handleTitleClick">Kuih-nomics</h1>
         </header>
         <h2 class="subtitle">
           Discover your Singaporean Drink!<br />
