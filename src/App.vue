@@ -1,532 +1,41 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, reactive, ref } from "vue";
+import { computed, onBeforeUnmount } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useQuizStore } from './composables/useQuizStore'
 
-type ScoreKey =
-  | "introvertScore"
-  | "extrovertScore"
-  | "judgingScore"
-  | "perceivingScore"
-  | "sensingScore"
-  | "intuitionScore"
-  | "thinkingScore"
-  | "feelingScore";
-
-type ScoreDelta = Partial<Record<ScoreKey, number>>;
-
-type ScoreState = Record<ScoreKey, number>;
-
-type View =
-  | "home"
-  | "quiz"
-  | "ending"
-  | "results"
-  | "allDrinks"
-  | "drinkDetail"
-  | "secretHome"
-  | "secretQuiz"
-  | "secretResult";
-
-interface Question {
-  question: string;
-  choices: string[];
-  weights: ScoreDelta[];
-}
-
-interface Drink {
-  name: string;
-  image: string;
-  thumbnail: string;
-}
-
-interface SecretDrink {
-  name: string;
-  image: string;
-}
-
-const PLACEHOLDER_IMAGE = "/copyright-placeholder.svg";
-
-const questions: Question[] = [
-  {
-    question: "When you receive your monthly pay, what’s the FIRST thing you usually do?",
-    choices: [
-      "Set aside savings immediately.",
-      "Treat yourself to something nice.",
-      "Split it between savings and investments.",
-      "Dream about the big goals it’ll help you achieve.",
-      "Quietly stash some away without telling anyone.",
-      "Think of ways to grow it with side hustles."
-    ],
-    weights: [
-      { judgingScore: 2, sensingScore: 1 },
-      { extrovertScore: 2, feelingScore: 1 },
-      { judgingScore: 1, thinkingScore: 1, perceivingScore: 1 },
-      { intuitionScore: 2, feelingScore: 1 },
-      { introvertScore: 2, sensingScore: 1 },
-      { extrovertScore: 1, intuitionScore: 1, perceivingScore: 1 }
-    ]
-  },
-  {
-    question:
-      "If you suddenly received a $1,000 windfall, how would you use it?",
-    choices: [
-      "Deposit it straight into your savings.",
-      "Splurge on something fun you’ve been eyeing.",
-      "Save part, invest part.",
-      "Put it towards your dream (home, trip, education).",
-      "Keep it tucked away quietly for a rainy day.",
-      "Use it as capital for a small project or hustle."
-    ],
-    weights: [
-      { sensingScore: 2, judgingScore: 1 },
-      { extrovertScore: 2, perceivingScore: 1 },
-      { thinkingScore: 2, judgingScore: 1 },
-      { intuitionScore: 2, feelingScore: 1 },
-      { introvertScore: 2, sensingScore: 1 },
-      { extrovertScore: 1, thinkingScore: 1, perceivingScore: 1 }
-    ]
-  },
-  {
-    question:
-      "How do you usually feel about taking financial risks?\"",
-    choices: [
-      "Avoid them — safety first.",
-      "Excited — why not try?",
-      "Open, but only with balance.",
-      "Necessary if it gets me closer to my goals.",
-      "Prefer quiet, safe growth.",
-      "Love risks — they mean opportunities.",
-    ],
-    weights: [
-      { thinkingScore: 2, judgingScore: 1 },
-      { feelingScore: 2, perceivingScore: 1 }
-    ]
-  },
-  {
-    question:
-      'What does “budgeting” mean to you?',
-    choices: [
-      "An essential routine — I follow my budget closely.",
-      "Restrictive — I prefer flexibility.",
-      "A guide, but not too strict.",
-      "A tool to track how close I am to my dreams.",
-      "A quiet discipline I keep to myself.",
-      "A flexible map — I budget, but always leave room for new opportunities."
-    ],
-    weights: [
-      { judgingScore: 2, intuitionScore: 1 },
-      { perceivingScore: 2, sensingScore: 1 }
-    ]
-  },
-  {
-    question:
-      'When friends describe your money habits, they say you’re…"',
-    choices: [
-      "Steady and disciplined.",
-      "Fun and generous",
-      "Balanced and sensible.",
-      "Ambitious and forward-looking.",
-      "Low-key but dependable.",
-      "Hustling and creative."
-    ],
-    weights: [
-      { extrovertScore: 2, feelingScore: 1 },
-      { introvertScore: 2, thinkingScore: 1 }
-    ]
-  },
-  {
-    question:
-      "Your ideal investment style is...",
-    choices: [
-      "Low-risk, steady returns.",
-      "High-risk, instant thrill.",
-      "Balanced portfolio.",
-      "Growth-focused, long-term.",
-      "Conservative, hidden savings with small steps into investing.",
-      "Business ventures, side hustles, quick growth."
-    ],
-    weights: [
-      { perceivingScore: 2, intuitionScore: 1 },
-      { judgingScore: 2, sensingScore: 1 }
-    ]
-  },
-  {
-    question:
-      'When it comes to shopping, your approach is:"',
-    choices: [
-      "Buy only what I need.",
-      "If I like it, I buy it",
-      "Mix of needs and wants.",
-      "Buy things that remind me of my dreams.",
-      "Prefer not to shop much, I keep it simple.",
-      "Always compare prices and see if I can resell/flip."
-    ],
-    weights: [
-      { sensingScore: 2, judgingScore: 1 },
-      { intuitionScore: 2, perceivingScore: 1 }
-    ]
-  },
-  {
-    question:
-      'What motivates you most in money matters?"',
-    choices: [
-      "Stability and security.",
-      "Enjoying life today.",
-      "Having balance and peace of mind.",
-      "Building towards a bigger dream.",
-      "Quiet assurance of safety.",
-      "Freedom to chase opportunities."
-    ],
-    weights: [
-      { thinkingScore: 2, judgingScore: 1 },
-      { feelingScore: 2, perceivingScore: 1 }
-    ]
-  },
-  {
-   question:
-      'If a financial challenge hits you, how do you respond?"',
-    choices: [
-      "Stick to my savings buffer.",
-      "Panic a bit but figure it out later.",
-      "Re-adjust between savings and investments.",
-      "Think of how it affects my long-term goals.",
-      "Quietly rely on the reserves I’ve built",
-      "Try to create a quick side income to cover it."
-    ],
-    weights: [
-      { perceivingScore: 2, intuitionScore: 1 },
-      { judgingScore: 2, sensingScore: 1 }
-    ]
-  },
-  {
-    question:
-      'Which local kuih would you reach for at a pasar malam?"',
-    choices: [
-      "Kuih Lapis — comforting, layered, classic",
-      "Ondeh-Ondeh — sweet, surprising, playful.",
-      "Putri Salat — balanced, two flavours in one.",
-      "Putri Ayu — eye-catching, aspirational",
-      "Kuih Dadar — humble, wrapped, underrated.",
-      "Apam Balik — crispy, filled with surprises."
-    ],
-    weights: [
-      { sensingScore: 2, judgingScore: 1 },
-      { intuitionScore: 2, perceivingScore: 1 }
-    ]
-  }
-];
-
-const questionImages = questions.map(() => PLACEHOLDER_IMAGE);
-const endingImage = PLACEHOLDER_IMAGE;
-const secretImage = PLACEHOLDER_IMAGE;
-
-const resultMap = {
-  ENTJ: {
-    name: "Teh C Kosong",
-    image: PLACEHOLDER_IMAGE,
-    thumbnail: PLACEHOLDER_IMAGE
-  },
-  INTJ: {
-    name: "Kopi Gao",
-    image: PLACEHOLDER_IMAGE,
-    thumbnail: PLACEHOLDER_IMAGE
-  },
-  ENTP: {
-    name: "Soursop Juice",
-    image: PLACEHOLDER_IMAGE,
-    thumbnail: PLACEHOLDER_IMAGE
-  },
-  INTP: {
-    name: "Black & White",
-    image: PLACEHOLDER_IMAGE,
-    thumbnail: PLACEHOLDER_IMAGE
-  },
-  ENFJ: {
-    name: "Barley Water",
-    image: PLACEHOLDER_IMAGE,
-    thumbnail: PLACEHOLDER_IMAGE
-  },
-  INFJ: {
-    name: "Chrysanthemum Tea",
-    image: PLACEHOLDER_IMAGE,
-    thumbnail: PLACEHOLDER_IMAGE
-  },
-  ENFP: {
-    name: "Milo Dinosaur",
-    image: PLACEHOLDER_IMAGE,
-    thumbnail: PLACEHOLDER_IMAGE
-  },
-  INFP: {
-    name: "Bandung",
-    image: PLACEHOLDER_IMAGE,
-    thumbnail: PLACEHOLDER_IMAGE
-  },
-  ESFJ: {
-    name: "Honey Lemon",
-    image: PLACEHOLDER_IMAGE,
-    thumbnail: PLACEHOLDER_IMAGE
-  },
-  ISFJ: {
-    name: "Soya Milk",
-    image: PLACEHOLDER_IMAGE,
-    thumbnail: PLACEHOLDER_IMAGE
-  },
-  ESTJ: {
-    name: "Lime Juice",
-    image: PLACEHOLDER_IMAGE,
-    thumbnail: PLACEHOLDER_IMAGE
-  },
-  ISTJ: {
-    name: "Kopi O Kosong",
-    image: PLACEHOLDER_IMAGE,
-    thumbnail: PLACEHOLDER_IMAGE
-  },
-  ESTP: {
-    name: "Coconut Shake",
-    image: PLACEHOLDER_IMAGE,
-    thumbnail: PLACEHOLDER_IMAGE
-  },
-  ISTP: {
-    name: "Sugarcane Juice",
-    image: PLACEHOLDER_IMAGE,
-    thumbnail: PLACEHOLDER_IMAGE
-  },
-  ESFP: {
-    name: "Bubble Tea",
-    image: PLACEHOLDER_IMAGE,
-    thumbnail: PLACEHOLDER_IMAGE
-  },
-  ISFP: {
-    name: "Avocado Shake",
-    image: PLACEHOLDER_IMAGE,
-    thumbnail: PLACEHOLDER_IMAGE
-  }
-} as const satisfies Record<string, Drink>;
-
-type MbtiCode = keyof typeof resultMap;
-
-const secretResults: SecretDrink[] = [
-  {
-    name: "Strawberry Matcha Latte",
-    image: PLACEHOLDER_IMAGE
-  },
-  {
-    name: "Butterfly Pea Passionfruit Tea",
-    image: PLACEHOLDER_IMAGE
-  }
-];
-
-const secretScenario = {
-  question:
-    "At midnight, you find a hidden door behind a library bookshelf. Inside sits a Timekeeper who offers you one of two clocks.",
-  choices: [
-    "One clock slows down moments of comfort, allowing you to savour every peaceful pause.",
-    "The other speeds up decision-making, helping you act on instinct and ride emotional waves confidently."
-  ]
-};
-
-const view = ref<View>("home");
-const questionIndex = ref(0);
-const scores = reactive<ScoreState>({
-  introvertScore: 0,
-  extrovertScore: 0,
-  judgingScore: 0,
-  perceivingScore: 0,
-  sensingScore: 0,
-  intuitionScore: 0,
-  thinkingScore: 0,
-  feelingScore: 0
-});
-
-const currentMbti = ref<MbtiCode | null>(null);
-const toastMessage = ref("");
-let toastTimer: number | null = null;
-
-const secretUnlocked = ref(false);
-const secretPromptOpen = ref(false);
-const secretClicks = ref(0);
-const secretChoice = ref<number | null>(null);
+const router = useRouter()
+const route = useRoute()
+const quiz = useQuizStore()
 
 const rootClasses = computed(() => {
-  const classes = ["quiz-app"] as string[];
-  if (view.value === "home") classes.push("home-page");
-  if (view.value === "secretHome") classes.push("home-page", "secret-home-page");
-  if (view.value === "results" || view.value === "drinkDetail") classes.push("results-page");
-  if (view.value === "allDrinks") classes.push("all-drinks-page");
-  if (view.value === "secretQuiz" || view.value === "secretResult") {
-    classes.push("results-page", "secret-home-page");
+  const classes = ['quiz-app'] as string[]
+  switch (route.name) {
+    case 'home':
+      classes.push('home-page')
+      break
+    case 'secret-home':
+      classes.push('home-page', 'secret-home-page')
+      break
+    case 'results':
+    case 'drink-detail':
+      classes.push('results-page')
+      break
+    case 'all-drinks':
+      classes.push('all-drinks-page')
+      break
+    case 'secret-quiz':
+    case 'secret-result':
+      classes.push('results-page', 'secret-home-page')
+      break
   }
-  return classes;
-});
+  return classes
+})
 
-const showStarField = computed(() => rootClasses.value.includes("home-page"));
-
-const currentResult = computed(() => {
-  if (!currentMbti.value) return null;
-  return {
-    code: currentMbti.value,
-    drink: resultMap[currentMbti.value]
-  };
-});
-
-const allDrinks = computed(() =>
-  Object.entries(resultMap).map(([code, drink]) => ({ code: code as MbtiCode, drink }))
-);
-
-const secretResult = computed(() => {
-  if (secretChoice.value == null) return null;
-  return secretResults[secretChoice.value] ?? null;
-});
-
-function resetScores() {
-  (Object.keys(scores) as ScoreKey[]).forEach(key => {
-    scores[key] = 0;
-  });
-}
-
-function startQuiz() {
-  resetScores();
-  questionIndex.value = 0;
-  currentMbti.value = null;
-  view.value = "quiz";
-}
-
-function applyWeights(weight?: ScoreDelta) {
-  if (!weight) return;
-  (Object.keys(weight) as ScoreKey[]).forEach(key => {
-    scores[key] += weight[key] ?? 0;
-  });
-}
-
-function answerQuestion(choiceIdx: number) {
-  const question = questions[questionIndex.value];
-  const weight = question.weights[choiceIdx];
-  applyWeights(weight);
-  if (questionIndex.value < questions.length - 1) {
-    questionIndex.value += 1;
-  } else {
-    view.value = "ending";
-  }
-}
-
-function computeMbti(): MbtiCode {
-  const letters = [
-    scores.extrovertScore > scores.introvertScore ? "E" : "I",
-    scores.sensingScore > scores.intuitionScore ? "S" : "N",
-    scores.thinkingScore > scores.feelingScore ? "T" : "F",
-    scores.judgingScore > scores.perceivingScore ? "J" : "P"
-  ].join("");
-  return letters as MbtiCode;
-}
-
-function revealResult() {
-  currentMbti.value = computeMbti();
-  view.value = "results";
-}
-
-function viewAllDrinks() {
-  view.value = "allDrinks";
-}
-
-function openDrinkDetail(code: MbtiCode) {
-  currentMbti.value = code;
-  view.value = "drinkDetail";
-}
-
-function goBackToResults() {
-  view.value = "results";
-}
-
-function tryAgain() {
-  resetScores();
-  questionIndex.value = 0;
-  currentMbti.value = null;
-  view.value = "home";
-}
-
-function showToast(message: string) {
-  toastMessage.value = message;
-  if (toastTimer) window.clearTimeout(toastTimer);
-  toastTimer = window.setTimeout(() => {
-    toastMessage.value = "";
-  }, 2200);
-}
-
-async function copyText(text: string) {
-  try {
-    await navigator.clipboard.writeText(text);
-    showToast("Message copied! ✨");
-  } catch (error) {
-    console.error("Clipboard copy failed", error);
-  }
-}
-
-async function shareQuest(isSecret = false) {
-  const result = currentResult.value;
-  const drinkName = isSecret && secretResult.value ? secretResult.value.name : result?.drink.name;
-  const shareText = isSecret
-    ? `🤫 I unlocked this secret drink in LimSimi! Try to find the secret entrance from the first page! 🥤🔒\n${window.location.href}`
-    : `✨ Wah! I'm ${drinkName ?? "my drink"} in the LimSimi Quiz! 🥤 Come and find out your Singapore drink match! 🇸🇬\n${window.location.href}`;
-
-  try {
-    if (navigator.share) {
-      await navigator.share({
-        title: "🍵 LimSimi Quiz - My Singapore Drink!",
-        text: shareText
-      });
-      return;
-    }
-  } catch (error) {
-    console.warn("Share failed, falling back to clipboard", error);
-  }
-
-  await copyText(shareText);
-}
-
-async function copyResultLink() {
-  await copyText(window.location.href);
-}
-
-function handleTitleClick() {
-  if (secretUnlocked.value) return;
-  secretClicks.value += 1;
-  if (secretClicks.value >= 5) {
-    secretPromptOpen.value = true;
-    secretClicks.value = 0;
-  }
-}
-
-function confirmSecretMode() {
-  secretPromptOpen.value = false;
-  secretUnlocked.value = true;
-  view.value = "secretHome";
-}
-
-function cancelSecretMode() {
-  secretPromptOpen.value = false;
-}
-
-function startSecretJourney() {
-  secretChoice.value = null;
-  view.value = "secretQuiz";
-}
-
-function answerSecret(choiceIdx: number) {
-  secretChoice.value = choiceIdx;
-  view.value = "secretResult";
-}
-
-function resetSecret() {
-  secretUnlocked.value = false;
-  secretChoice.value = null;
-  view.value = "home";
-}
+const showStarField = computed(() => rootClasses.value.includes('home-page'))
 
 onBeforeUnmount(() => {
-  if (toastTimer) {
-    window.clearTimeout(toastTimer);
-    toastTimer = null;
-  }
-});
+  quiz.clearToastTimer()
+})
 </script>
 
 <template>
@@ -534,197 +43,10 @@ onBeforeUnmount(() => {
     <div v-if="showStarField" class="star-field"></div>
 
     <div class="wrapper">
-      <!-- Home -->
-      <template v-if="view === 'home'">
-        <header class="header">
-          <h1 class="title" @click="handleTitleClick">Kuih-nomics</h1>
-        </header>
-        <h2 class="subtitle">What’s Your Financial Flavour?</h2>
-        <h3 class="description">
-          Let's masuk dapur and find out which kuih matches<br/> your financial personality!
-        </h3>
-        <button class="btn main-button" @click="startQuiz">Take the quiz</button>
-      </template>
-
-      <!-- Secret landing -->
-      <template v-else-if="view === 'secretHome'">
-        <header class="header">
-          <h1 class="title" @click="handleTitleClick">Kuih-nomics</h1>
-        </header>
-        <h2 class="subtitle">
-          Discover your Singaporean Drink!<br />
-          (Secret Mode)
-        </h2>
-        <h3 class="description">You have unlocked a secret journey. Ready?</h3>
-        <button class="btn main-button" @click="startSecretJourney">Start Secret Journey</button>
-      </template>
-
-      <!-- Quiz -->
-      <template v-else-if="view === 'quiz'">
-        <div class="quiz-container">
-          <div class="question-number">Q{{ questionIndex + 1 }}/{{ questions.length }}</div>
-          <div class="question-container">
-            <div class="question">{{ questions[questionIndex].question }}</div>
-            <img
-              :src="questionImages[questionIndex]"
-              alt="Question Scene"
-              class="question-image"
-            />
-          </div>
-          <div class="choices-container">
-            <button
-              v-for="(choice, idx) in questions[questionIndex].choices"
-              :key="idx"
-              class="btn choice"
-              @click="answerQuestion(idx)"
-            >
-              {{ choice }}
-            </button>
-          </div>
-        </div>
-      </template>
-
-      <!-- Ending scene -->
-      <template v-else-if="view === 'ending'">
-        <div class="quiz-container">
-          <div class="question">
-            You find yourself back at the original hawker stall, but now the mysterious uncle is holding a steaming cup of your perfectly crafted drink. "Wah, you completed the whole quest! Your journey through magical Singapore has revealed exactly which drink matches your personality."
-          </div>
-          <img :src="endingImage" alt="Uncle preparing your destined drink" class="question-image" />
-          <div class="choices-container">
-            <button class="btn whoosh-button" @click="revealResult">Reveal My Drink!</button>
-          </div>
-        </div>
-      </template>
-
-      <!-- Results -->
-      <template v-else-if="view === 'results' && currentResult">
-        <div class="results-container">
-          <div class="share-header">
-            <div class="share-text">Feel free to share your result at</div>
-            <div class="share-hashtag">#LimSimiQuiz</div>
-            <div class="share-tip">psst... long press to save your drink card!</div>
-          </div>
-          <div class="result-card">
-            <img
-              :src="currentResult.drink.image"
-              :alt="currentResult.drink.name"
-              class="drink-result-image"
-            />
-          </div>
-          <div class="button-container">
-            <button class="btn small-button" @click="shareQuest()">Share Quest</button>
-            <button class="btn small-button" @click="viewAllDrinks">All Drinks</button>
-          </div>
-          <div class="button-container">
-            <button class="btn small-button" @click="copyResultLink">Copy Link</button>
-            <button class="btn small-button" @click="tryAgain">Try Again</button>
-          </div>
-        </div>
-      </template>
-
-      <!-- All drinks overview -->
-      <template v-else-if="view === 'allDrinks'">
-        <div class="all-drinks-container">
-          <h1 class="page-title">Kopitiam Menu</h1>
-          <p class="page-subtitle">Discover every personality drink match!</p>
-          <div class="drinks-grid">
-            <button
-              v-for="item in allDrinks"
-              :key="item.code"
-              class="drink-item"
-              @click="openDrinkDetail(item.code)"
-            >
-              <img :src="item.drink.thumbnail" :alt="item.drink.name" class="drink-thumbnail" />
-            </button>
-          </div>
-          <div class="bottom-buttons">
-            <button class="btn back-button" @click="goBackToResults">← Back to Results</button>
-            <button class="btn try-again-button" @click="tryAgain">Try Again</button>
-          </div>
-        </div>
-      </template>
-
-      <!-- Drink detail -->
-      <template v-else-if="view === 'drinkDetail' && currentResult">
-        <div class="results-container">
-          <div class="share-header">
-            <div class="share-text">Drink Details</div>
-            <div class="share-tip">Long press to save your drink card</div>
-          </div>
-          <div class="result-card">
-            <img
-              :src="currentResult.drink.image"
-              :alt="currentResult.drink.name"
-              class="drink-result-image"
-            />
-          </div>
-          <div class="button-container">
-            <button class="btn small-button" @click="viewAllDrinks">← All Drinks</button>
-            <button class="btn small-button" @click="tryAgain">Take Quiz</button>
-          </div>
-        </div>
-      </template>
-
-      <!-- Secret quiz -->
-      <template v-else-if="view === 'secretQuiz'">
-        <div class="quiz-container">
-          <div class="question">{{ secretScenario.question }}</div>
-          <img :src="secretImage" alt="Secret Quiz" class="question-image" />
-          <div class="choices-container">
-            <button
-              v-for="(choice, idx) in secretScenario.choices"
-              :key="idx"
-              class="btn choice"
-              @click="answerSecret(idx)"
-            >
-              {{ choice }}
-            </button>
-          </div>
-        </div>
-      </template>
-
-      <!-- Secret result -->
-      <template v-else-if="view === 'secretResult' && secretResult">
-        <div class="results-container">
-          <div class="share-header">
-            <div class="share-text">Secret Result</div>
-            <div class="share-text">wow... you found your way here!</div>
-            <div class="share-tip">share this around but don't reveal the secret! ;)</div>
-          </div>
-          <div class="result-card">
-            <img :src="secretResult.image" :alt="secretResult.name" class="drink-result-image" />
-          </div>
-          <div class="button-container">
-            <button class="btn small-button" @click="shareQuest(true)">Share</button>
-            <button class="btn small-button" @click="resetSecret">Back to Normal</button>
-          </div>
-        </div>
-      </template>
-    </div>
-<!-----
-    <footer class="fun-footer">
-      <p>
-        <a href="https://coff.ee/tyeckh" target="_blank" rel="noopener noreferrer">Support with a kopi</a>
-        if you enjoyed the quiz!<br />
-        <a href="https://forms.gle/Sd8VgC4Pvqy4YneL7" target="_blank" rel="noopener noreferrer">lmk your thoughts here!</a>
-        © 2025 LimSimi.
-      </p>
-    </footer>
-    --->
-
-    <div v-if="secretPromptOpen" class="secret-modal">
-      <div class="secret-card">
-        <h3>You found a hidden portal!</h3>
-        <p>Unlock secret mode and continue the LimSimi quest?</p>
-        <div class="secret-actions">
-          <button class="btn small-button" @click="confirmSecretMode">Unlock Secret Mode</button>
-          <button class="btn small-button" @click="cancelSecretMode">Maybe later</button>
-        </div>
-      </div>
+      <router-view />
     </div>
 
-    <div v-if="toastMessage" class="toast">{{ toastMessage }}</div>
+    <div v-if="quiz.toastMessage" class="toast">{{ quiz.toastMessage }}</div>
   </div>
 </template>
 
@@ -773,14 +95,14 @@ body {
 }
 
 .quiz-app.home-page {
-  background-image: url("/copyright-placeholder.svg");
+  background-image: url("/landing-kuih.jpeg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
 .quiz-app.home-page.secret-home-page {
-  background-image: url("/copyright-placeholder.svg");
+  background-image: url("landing-kuih-2.jpeg");
 }
 
 .star-field {
@@ -1013,6 +335,96 @@ body {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
+.form-card {
+  width: 90%;
+  max-width: 380px;
+  margin: 0 auto;
+  padding: 24px 22px;
+  background: #ffffffee;
+  border-radius: 20px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.22);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 2px solid transparent;
+  background: #f5f7fa;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #ffd93d;
+  box-shadow: 0 0 0 4px rgba(255, 217, 61, 0.25);
+}
+
+.form-input.has-error {
+  border-color: #ff6b6b;
+  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+}
+
+.form-error {
+  font-size: 0.85rem;
+  color: #c0392b;
+}
+
+.form-error--inline {
+  text-align: center;
+  margin-top: -6px;
+}
+
+.consent-group {
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.form-consent {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  color: #2c3e50;
+  cursor: pointer;
+}
+
+.consent-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: #ffd93d;
+}
+
+.submit-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.submit-button {
+  width: 100%;
+  max-width: 320px;
+  font-size: clamp(1.1rem, 3vw, 1.6rem);
+  padding: 18px 30px;
+}
+
 .results-container {
   display: flex;
   flex-direction: column;
@@ -1023,28 +435,7 @@ body {
   box-sizing: border-box;
 }
 
-.share-header {
-  text-align: center;
-  margin-bottom: 0;
-  color: #e5ecff;
-}
-
-.share-text {
-  font-size: clamp(1.3rem, 3vw, 1.6rem);
-  font-weight: 600;
-}
-
-.share-hashtag {
-  color: #fff;
-  font-size: clamp(1.4rem, 3vw, 1.8rem);
-  text-decoration: none;
-  font-weight: 700;
-}
-
-.share-tip {
-  font-size: clamp(0.95rem, 1.8vw, 1.05rem);
-  font-weight: 700;
-}
+/* share header removed */
 
 .result-card {
   background: transparent;
@@ -1053,6 +444,95 @@ body {
   text-align: center;
   max-width: 450px;
   position: relative;
+}
+
+.persona-header {
+  text-align: center;
+  color: #fff;
+  margin-bottom: 10px;
+  padding: 0 12px;
+}
+
+.persona-name {
+  font-size: clamp(2.2rem, 6vw, 3rem);
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.persona-headline {
+  font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+  font-weight: 700;
+  color: #ffeaa7;
+  margin-bottom: 8px;
+}
+
+.persona-note {
+  font-size: 0.95rem;
+  color: #f1f2ff;
+  margin-top: 6px;
+}
+
+.persona-body {
+  max-width: 520px;
+  text-align: center;
+  color: #fff;
+  padding: 0 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.persona-section {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 18px;
+  padding: 16px 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+.persona-section__title {
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #ffd93d;
+}
+
+.persona-traits {
+  list-style: disc;
+  padding-left: 20px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+}
+
+.persona-traits li::marker {
+  color: #ffd93d;
+}
+
+.persona-financial p {
+  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  line-height: 1.6;
+}
+
+.persona-story {
+  font-size: clamp(1rem, 3vw, 1.2rem);
+  line-height: 1.7;
+}
+
+.persona-cta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+}
+
+.persona-cta__label {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.9rem;
+  color: #ffeaa7;
+  font-weight: 800;
 }
 
 .drink-result-image {
@@ -1137,17 +617,25 @@ body {
 
 .drinks-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  grid-template-columns: repeat(3, minmax(120px, 1fr));
   gap: 16px;
   width: 100%;
   margin-bottom: 30px;
 }
 
+@media (max-width: 767px) {
+  .drinks-grid {
+    grid-template-columns: repeat(2, minmax(140px, 1fr));
+  }
+}
+
 .drink-item {
   aspect-ratio: 1 / 1;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 8px;
   border-radius: 16px;
   padding: 8px;
   background: #fff;
@@ -1166,6 +654,13 @@ body {
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+.drink-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #2c3e50;
+  text-align: center;
 }
 
 .bottom-buttons {
