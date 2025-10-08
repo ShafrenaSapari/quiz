@@ -11,6 +11,8 @@ const questionIndex = computed(() => quiz.questionIndex.value)
 const quizCompleted = computed(() => quiz.quizCompleted.value)
 const currentQuestion = computed(() => questions[questionIndex.value])
 const currentImage = computed(() => questionImages[questionIndex.value])
+const selectedChoices = computed(() => quiz.selectedChoices.value)
+const canGoBack = computed(() => questionIndex.value > 0)
 
 const form = reactive({
   name: '',
@@ -35,6 +37,11 @@ const submitError = ref('')
 
 function answerQuestion(choiceIdx: number) {
   quiz.answerQuestion(choiceIdx)
+}
+
+function goBack() {
+  if (!canGoBack.value) return
+  quiz.goToPreviousQuestion()
 }
 
 function validateForm() {
@@ -74,6 +81,25 @@ async function submitForm() {
     payload.append('citizenship', form.citizenship)
     payload.append('consent', form.consent ? 'yes' : 'no')
 
+    const personaPrediction = quiz.predictPersona()
+    if (personaPrediction.persona) {
+      payload.append('personaId', personaPrediction.persona.id)
+      payload.append('personaName', personaPrediction.persona.name)
+      payload.append('personaHeadline', personaPrediction.persona.headline)
+    }
+    payload.append('personaQualified', personaPrediction.personaQualified ? 'yes' : 'no')
+
+    const responses = selectedChoices.value.map((choiceIdx, questionIdx) => {
+      const question = questions[questionIdx]
+      const choice = choiceIdx >= 0 ? question.choices[choiceIdx] : ''
+      return {
+        question: question.question,
+        choiceIndex: choiceIdx,
+        choiceLabel: choice
+      }
+    })
+    payload.append('responses', JSON.stringify(responses))
+
     const response = await fetch(scriptUrl, {
       method: 'POST',
       body: payload
@@ -96,7 +122,12 @@ async function submitForm() {
 
 <template>
   <div v-if="!quizCompleted" class="quiz-container">
-    <div class="question-number">Q{{ questionIndex + 1 }}/{{ totalQuestions }}</div>
+    <div class="quiz-nav">
+      <button class="quiz-back-button" :disabled="!canGoBack" type="button" @click="goBack">
+        ← Back
+      </button>
+      <div class="question-number">Q{{ questionIndex + 1 }}/{{ totalQuestions }}</div>
+    </div>
     <div class="question-container">
       <div class="question">{{ currentQuestion.question }}</div>
       <img :src="currentImage" alt="Question Scene" class="question-image" />
@@ -105,7 +136,7 @@ async function submitForm() {
       <button
         v-for="(choice, idx) in currentQuestion.choices"
         :key="idx"
-        class="btn choice"
+        :class="['btn', 'choice', { 'choice-selected': selectedChoices[questionIndex] === idx }]"
         @click="answerQuestion(idx)"
       >
         {{ choice }}
@@ -113,12 +144,9 @@ async function submitForm() {
     </div>
   </div>
 
-  <div v-else class="quiz-container">
-    <div class="question">
-      Share your details to receive your personalised drink reveal!
-    </div>
-    <img :src="endingImage" alt="Quiz wrap-up" class="question-image" />
+  <div v-else class="quiz-container quiz-container--form">
     <form class="form-card" @submit.prevent="submitForm">
+      <img :src="endingImage" alt="Quiz wrap-up" class="form-card__image" />
       <div class="form-group">
         <label class="form-label" for="quiz-name">Name</label>
         <input

@@ -47,6 +47,7 @@ onBeforeUnmount(() => {
     </div>
 
     <div v-if="quiz.toastMessage" class="toast">{{ quiz.toastMessage }}</div>
+    <footer class="app-footer">© Savviya SG</footer>
   </div>
 </template>
 
@@ -92,6 +93,15 @@ body {
   background: #cdeb53;
   font-family: Nunito, sans-serif;
   overflow-x: hidden;
+}
+
+.app-footer {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  font-size: 0.9rem;
+  color: #ffffffcc;
+  letter-spacing: 0.02em;
 }
 
 .quiz-app.home-page {
@@ -161,20 +171,42 @@ body {
 .wrapper {
   box-sizing: border-box;
   width: 100%;
-  height: 100svh;
+  min-height: 100svh;
   text-align: center;
-  padding: 10px 20px;
+  padding: clamp(16px, 6vw, 32px) clamp(18px, 8vw, 48px);
   background: none;
   border: none;
   box-shadow: none;
   margin: 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   position: relative;
   z-index: 2;
   flex: 1;
+}
+
+
+.quiz-app.results-page .wrapper {
+  justify-content: flex-start;
+  padding-top: clamp(24px, 8vh, 72px);
+  padding-bottom: clamp(24px, 6vh, 60px);
+}
+
+
+.intro-card {
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(12px);
+  border-radius: 24px;
+  padding: 28px 24px;
+  max-width: 520px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  margin-top: 40px;
 }
 
 .header {
@@ -254,35 +286,77 @@ body {
 }
 
 .quiz-container {
-  width: 100%;
-  max-width: 400px;
-  height: 100svh;
+  width: min(100%, 480px);
   display: flex;
   flex-direction: column;
-  padding: 20px 0 0;
+  padding: 12px 0 32px;
   margin: 0 auto;
   align-items: center;
   flex-grow: 1;
+  min-height: 0;
+}
+
+
+.quiz-container--form {
+  width: 100%;
+  max-width: 460px;
+  gap: clamp(12px, 2.5vw, 20px);
+  padding: clamp(12px, 4vh, 28px) clamp(12px, 5vw, 22px) clamp(18px, 6vh, 36px);
+  align-items: center;
+  justify-content: center;
+}
+
+
+.quiz-nav {
+  width: 100%;
+  max-width: 440px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.quiz-back-button {
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.quiz-back-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.quiz-back-button:disabled {
+  cursor: default;
+  opacity: 0.4;
 }
 
 .question-number {
-  position: absolute;
-  top: 0;
-  left: 20px;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #ffffffe6;
+  justify-self: center;
+  font-size: clamp(1.4rem, 4vw, 1.7rem);
+  font-weight: 800;
+  color: #2b173d;
+  background: rgba(255, 217, 61, 0.95);
+  padding: 10px 18px;
+  border-radius: 999px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
 }
 
 .question-image {
-  width: 100%;
-  max-width: 320px;
+  width: min(100%, 340px);
   height: auto;
   object-fit: contain;
-  margin: 0 auto 15px;
+  margin: 0 auto 18px;
   display: block;
-  border-radius: 5px;
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
 }
 
 .question {
@@ -298,9 +372,9 @@ body {
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
   gap: 12px;
-  width: 90%;
+  width: 100%;
   max-width: 440px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 @media (min-width: 600px) {
@@ -310,7 +384,7 @@ body {
 }
 
 .choice {
-  font-size: clamp(1rem, 3vw, 1.2rem);
+  font-size: clamp(0.95rem, 2.5vw, 1.05rem);
   font-weight: 600;
   padding: 18px 8px;
   background: #fff;
@@ -329,6 +403,12 @@ body {
   justify-content: center;
 }
 
+.choice.choice-selected {
+  background: linear-gradient(135deg, #ffd93d, #f7dc6f);
+  color: #2c3e50;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
 .choice:hover {
   background: #f5f5f5;
   transform: translateY(-2px) scale(1.02);
@@ -336,16 +416,66 @@ body {
 }
 
 .form-card {
-  width: 90%;
-  max-width: 380px;
+  width: 100%;
+  max-width: 340px;
   margin: 0 auto;
-  padding: 24px 22px;
+  padding: clamp(18px, 3vw, 22px) clamp(18px, 4vw, 24px);
   background: #ffffffee;
   border-radius: 20px;
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.22);
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 14px;
+}
+
+.form-card__title {
+  font-size: clamp(1.1rem, 4.2vw, 1.45rem);
+  font-weight: 800;
+  text-align: center;
+  color: #2b173d;
+  line-height: 1.3;
+}
+
+
+.form-card__image {
+  width: clamp(160px, 55vw, 240px);
+  max-width: 100%;
+  height: auto;
+  align-self: center;
+  border-radius: 16px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.22);
+  margin-bottom: 12px;
+}
+
+@media (min-width: 600px) {
+  .quiz-container--form {
+    max-width: 520px;
+    padding: clamp(18px, 6vh, 40px) clamp(24px, 6vw, 36px) clamp(24px, 7vh, 48px);
+  }
+
+  .form-card {
+    max-width: 380px;
+    gap: 16px;
+  }
+
+  .form-card__image {
+    width: clamp(190px, 32vw, 280px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .quiz-container--form {
+    max-width: 560px;
+    padding: clamp(24px, 8vh, 56px) clamp(32px, 7vw, 48px) clamp(32px, 9vh, 64px);
+  }
+
+  .form-card {
+    max-width: 400px;
+  }
+
+  .form-card__image {
+    width: clamp(220px, 28vw, 320px);
+  }
 }
 
 .form-group {
@@ -356,7 +486,7 @@ body {
 }
 
 .form-label {
-  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  font-size: clamp(0.85rem, 2.1vw, 0.95rem);
   font-weight: 700;
   color: #2c3e50;
 }
@@ -367,7 +497,7 @@ body {
   border-radius: 14px;
   border: 2px solid transparent;
   background: #f5f7fa;
-  font-size: 1rem;
+  font-size: clamp(0.9rem, 2.3vw, 0.98rem);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -401,7 +531,7 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  font-size: clamp(0.85rem, 2.2vw, 0.96rem);
   color: #2c3e50;
   cursor: pointer;
 }
@@ -421,8 +551,8 @@ body {
 .submit-button {
   width: 100%;
   max-width: 320px;
-  font-size: clamp(1.1rem, 3vw, 1.6rem);
-  padding: 18px 30px;
+  font-size: clamp(1rem, 2.4vw, 1.3rem);
+  padding: 14px 24px;
 }
 
 .results-container {
@@ -448,9 +578,12 @@ body {
 
 .persona-header {
   text-align: center;
-  color: #fff;
-  margin-bottom: 10px;
-  padding: 0 12px;
+  color: #2b173d;
+  margin-bottom: 18px;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 24px;
+  box-shadow: 0 18px 40px rgba(61, 44, 94, 0.18);
 }
 
 .persona-name {
@@ -460,40 +593,40 @@ body {
 }
 
 .persona-headline {
-  font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+  font-size: clamp(1.15rem, 3.5vw, 1.75rem);
   font-weight: 700;
-  color: #ffeaa7;
-  margin-bottom: 8px;
+  color: #654a9b;
+  margin-bottom: 10px;
 }
 
 .persona-note {
   font-size: 0.95rem;
-  color: #f1f2ff;
+  color: #4a4d66;
   margin-top: 6px;
 }
 
 .persona-body {
-  max-width: 520px;
-  text-align: center;
-  color: #fff;
+  max-width: 560px;
+  text-align: left;
+  color: #2b173d;
   padding: 0 16px 12px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
 }
 
 .persona-section {
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(255, 255, 255, 0.92);
   border-radius: 18px;
-  padding: 16px 20px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  padding: 18px 22px;
+  box-shadow: 0 12px 28px rgba(61, 44, 94, 0.12);
 }
 
 .persona-section__title {
-  font-size: clamp(1.1rem, 3vw, 1.4rem);
+  font-size: clamp(1.05rem, 3vw, 1.35rem);
   font-weight: 700;
-  margin-bottom: 10px;
-  color: #ffd93d;
+  margin-bottom: 12px;
+  color: #654a9b;
 }
 
 .persona-traits {
@@ -503,35 +636,39 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  font-size: clamp(0.9rem, 2.4vw, 1.05rem);
+  color: #2f2446;
 }
 
 .persona-traits li::marker {
-  color: #ffd93d;
+  color: #d28eff;
 }
 
 .persona-financial p {
-  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  font-size: clamp(0.9rem, 2.4vw, 1.05rem);
   line-height: 1.6;
+  color: #2f2446;
 }
 
 .persona-story {
-  font-size: clamp(1rem, 3vw, 1.2rem);
+  font-size: clamp(0.95rem, 2.6vw, 1.15rem);
   line-height: 1.7;
+  color: #312548;
 }
 
 .persona-cta {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  font-size: clamp(0.95rem, 2.4vw, 1.1rem);
+  color: #312548;
 }
 
 .persona-cta__label {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   font-size: 0.9rem;
-  color: #ffeaa7;
+  color: #ba7bff;
   font-weight: 800;
 }
 

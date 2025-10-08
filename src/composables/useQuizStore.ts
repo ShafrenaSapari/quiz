@@ -252,7 +252,7 @@ export const questionImages = [
   '/questions/q10.jpg'
 ]
 
-export const endingImage = PLACEHOLDER_IMAGE
+export const endingImage = '/questions/formpage.jpeg'
 export const secretImage = PLACEHOLDER_IMAGE
 
 export interface SecretDrink {
@@ -290,6 +290,7 @@ function createQuizStore() {
   const choiceCounts = reactive<number[]>(Array(personas.length).fill(0))
   const currentPersonaIndex = ref<number | null>(null)
   const personaQualified = ref(false)
+  const selectedChoices = ref<number[]>(Array(questions.length).fill(-1))
 
   const toastMessage = ref('')
   let toastTimer: number | null = null
@@ -318,8 +319,19 @@ function createQuizStore() {
     })
   }
 
+  function resetSelections() {
+    selectedChoices.value = Array(questions.length).fill(-1)
+  }
+
+  function updateChoiceCount(questionIdx: number, choiceIdx: number, delta: number) {
+    if (questionIdx < SCORING_QUESTION_COUNT && choiceIdx >= 0 && choiceIdx < choiceCounts.length) {
+      choiceCounts[choiceIdx] += delta
+    }
+  }
+
   function startQuiz() {
     resetChoiceCounts()
+    resetSelections()
     questionIndex.value = 0
     currentPersonaIndex.value = null
     personaQualified.value = false
@@ -327,17 +339,33 @@ function createQuizStore() {
   }
 
   function answerQuestion(choiceIdx: number) {
-    if (questionIndex.value < SCORING_QUESTION_COUNT) {
-      if (choiceIdx >= 0 && choiceIdx < choiceCounts.length) {
-        choiceCounts[choiceIdx] += 1
-      }
+    const currentIndex = questionIndex.value
+    const previousChoice = selectedChoices.value[currentIndex]
+
+    if (previousChoice !== -1) {
+      updateChoiceCount(currentIndex, previousChoice, -1)
     }
 
-    if (questionIndex.value < questions.length - 1) {
+    selectedChoices.value[currentIndex] = choiceIdx
+    updateChoiceCount(currentIndex, choiceIdx, 1)
+
+    if (currentIndex < questions.length - 1) {
       questionIndex.value += 1
     } else {
       quizCompleted.value = true
     }
+  }
+
+  function goToPreviousQuestion() {
+    if (questionIndex.value === 0 && !quizCompleted.value) return
+
+    if (quizCompleted.value) {
+      quizCompleted.value = false
+      questionIndex.value = questions.length - 1
+      return
+    }
+
+    questionIndex.value -= 1
   }
 
   function determinePersonaIndex() {
@@ -359,6 +387,16 @@ function createQuizStore() {
   function revealResult() {
     const personaIndex = determinePersonaIndex()
     currentPersonaIndex.value = personaIndex
+  }
+
+  function predictPersona() {
+    const personaIndex = determinePersonaIndex()
+    const persona = personas[personaIndex]
+    return {
+      persona,
+      personaIndex,
+      personaQualified: personaQualified.value
+    }
   }
 
   function tryAgain() {
@@ -392,13 +430,13 @@ function createQuizStore() {
   async function shareQuest(isSecret = false) {
     const personaName = isSecret && secretResult.value ? secretResult.value.name : currentPersona.value?.name
     const shareText = isSecret
-      ? `🤫 I unlocked this secret drink in LimSimi! Try to find the secret entrance from the first page! 🥤🔒\n${window.location.href}`
-      : `✨ Wah! I'm ${personaName ?? 'my kuih'} in the LimSimi Quiz! 🥮 Come and find out your financial kuih match! 🇸🇬\n${window.location.href}`
+      ? `🤫 I unlocked this secret drink in Kuih-nomics! Try to find the secret entrance from the first page! 🥤🔒\n${window.location.href}`
+      : `✨ Wah! I'm ${personaName ?? 'my kuih'} in the Kuih-nomics Quiz! 🥮 Come and find out your financial kuih match! 🇸🇬\n${window.location.href}`
 
     try {
       if (navigator.share) {
         await navigator.share({
-          title: '🍵 LimSimi Quiz - My Kuih Persona!',
+          title: '🍵 Kuih-nomics Quiz - My Kuih Persona!',
           text: shareText
         })
         return
@@ -449,6 +487,7 @@ function createQuizStore() {
     currentPersona,
     allPersonas,
     personaQualified,
+    selectedChoices,
     secretUnlocked,
     secretClicks,
     secretChoice,
@@ -457,11 +496,13 @@ function createQuizStore() {
     startQuiz,
     answerQuestion,
     revealResult,
+    predictPersona,
     tryAgain,
     setCurrentPersonaById,
     shareQuest,
     copyResultLink,
     handleTitleClick,
+    goToPreviousQuestion,
     startSecretJourney,
     answerSecret,
     resetSecret,

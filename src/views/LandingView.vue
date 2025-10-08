@@ -22,12 +22,14 @@ function startQuiz() {
 </script>
 
 <template>
-  <header class="header">
-    <h1 class="title" @click="quiz.handleTitleClick">Kuih-nomics</h1>
-  </header>
-  <h2 class="subtitle">What’s Your Financial Flavour?</h2>
-  <h3 class="description">
-    Let's masuk dapur and find out which kuih matches<br /> your financial personality!
-  </h3>
-  <button class="btn main-button" @click="startQuiz">Take the quiz</button>
+  <div class="intro-card">
+    <header class="header">
+      <h1 class="title" @click="quiz.handleTitleClick">Kuih-nomics</h1>
+    </header>
+    <h2 class="subtitle">What’s Your Financial Flavour?</h2>
+    <h3 class="description">
+      Let's masuk dapur and find out which kuih matches<br /> your financial personality!
+    </h3>
+    <button class="btn main-button" @click="startQuiz">Take the quiz</button>
+  </div>
 </template>
