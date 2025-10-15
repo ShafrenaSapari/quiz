@@ -83,26 +83,26 @@ body {
 }
 
 .quiz-app {
-  height: 100svh;
+  min-height: 100svh;
   width: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   position: relative;
   background: #cdeb53;
   font-family: Nunito, sans-serif;
   overflow-x: hidden;
+  padding-bottom: 16px;
 }
 
 .app-footer {
-  position: fixed;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
+  margin-top: auto;
+  padding: 12px 0 20px;
   font-size: 0.9rem;
   color: #000;
   letter-spacing: 0.02em;
-  z-index: 1;
+  width: 100%;
   text-align: center;
 }
 
@@ -175,7 +175,7 @@ body {
   width: 100%;
   min-height: 100svh;
   text-align: center;
-  padding: clamp(140px, 40vh, 240px) clamp(16px, 5vw, 30px) clamp(24px, 7vh, 44px);
+  padding: clamp(56px, 16vh, 96px) clamp(16px, 5vw, 30px) clamp(24px, 7vh, 44px);
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -295,7 +295,7 @@ body {
   width: min(100%, 640px);
   display: flex;
   flex-direction: column;
-  padding: clamp(160px, 50vh, 260px) clamp(8px, 2vw, 16px) clamp(20px, 6vh, 36px);
+  padding: clamp(64px, 20vh, 104px) clamp(8px, 2vw, 16px) clamp(20px, 6vh, 36px);
   margin: 0 auto;
   align-items: center;
   flex-grow: 1;
@@ -309,7 +309,7 @@ body {
   width: 100%;
   max-width: 520px;
   gap: clamp(14px, 3vh, 24px);
-  padding: clamp(200px, 60vh, 350px) clamp(14px, 4vw, 32px) clamp(24px, 6vh, 40px);
+  padding: clamp(80px, 24vh, 140px) clamp(14px, 4vw, 32px) clamp(24px, 6vh, 40px);
   align-items: center;
   justify-content: flex-start;
 }
@@ -548,13 +548,13 @@ body {
 
 @media (max-width: 480px) {
   .wrapper {
-    padding: clamp(120px, 45vh, 180px) clamp(12px, 5vw, 18px) clamp(18px, 6vh, 28px);
+    padding: clamp(48px, 18vh, 72px) clamp(12px, 5vw, 18px) clamp(18px, 6vh, 28px);
     max-width: 100%;
   }
 
   .quiz-container {
     width: 100%;
-    padding: clamp(140px, 50vh, 220px) 0 clamp(18px, 5vh, 26px);
+    padding: clamp(56px, 20vh, 88px) 0 clamp(18px, 5vh, 26px);
     gap: clamp(12px, 4vh, 18px);
   }
 
@@ -593,7 +593,7 @@ body {
 
   .quiz-container--form {
     max-width: 100%;
-    padding: clamp(180px, 60vh, 300px) clamp(14px, 6vw, 24px) clamp(22px, 6vh, 32px);
+    padding: clamp(72px, 24vh, 120px) clamp(14px, 6vw, 24px) clamp(22px, 6vh, 32px);
   }
 
   .form-card {
