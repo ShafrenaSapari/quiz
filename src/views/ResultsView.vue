@@ -62,8 +62,8 @@ function tryAgain() {
         <p class="persona-story">{{ currentPersona.story }}</p>
       </div>
       <div class="persona-section persona-cta">
-        <span class="persona-cta__label">Ready to level up?</span>
-        <p>{{ currentPersona.cta }}</p>
+        <span class="persona-cta__label">Want a treat to go with your kuih layers?</span>
+        <p>You might just walk away with Savviya’s first-ever Kuih Plushie! Winners will be contacted directly. Good luck, and stay shiok!</p>
       </div>
     </div>
 

@@ -175,18 +175,17 @@ body {
   width: 100%;
   min-height: 100svh;
   text-align: center;
-  padding: clamp(20px, 6vh, 40px) clamp(16px, 6vw, 32px) clamp(24px, 8vh, 48px);
-  background: none;
-  border: none;
-  box-shadow: none;
-  margin: 0;
+  padding: clamp(28px, 8vh, 48px) clamp(16px, 5vw, 30px) clamp(24px, 7vh, 44px);
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   position: relative;
   z-index: 2;
+  max-width: 1024px;
   flex: 1;
+  gap: clamp(18px, 5vh, 32px);
 }
 
 
@@ -293,14 +292,14 @@ body {
 }
 
 .quiz-container {
-  width: min(100%, 420px);
+  width: min(100%, 640px);
   display: flex;
   flex-direction: column;
-  padding: clamp(36px, 12vh, 84px) 0 clamp(16px, 5vh, 28px);
+  padding: clamp(32px, 10vh, 52px) clamp(8px, 2vw, 16px) clamp(20px, 6vh, 36px);
   margin: 0 auto;
   align-items: center;
   flex-grow: 1;
-  min-height: 0;
+  gap: clamp(16px, 5vh, 28px);
   position: relative;
   z-index: 2;
 }
@@ -308,22 +307,21 @@ body {
 
 .quiz-container--form {
   width: 100%;
-  max-width: 360px;
-  gap: 14px;
-  padding: 27px 18px 26px;
+  max-width: 520px;
+  gap: clamp(14px, 3vh, 24px);
+  padding: clamp(40px, 12vh, 70px) clamp(14px, 4vw, 32px) clamp(24px, 6vh, 40px);
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 
 .quiz-nav {
   width: 100%;
-  max-width: 440px;
+  max-width: 520px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding-top: clamp(10px, 2.5vh, 18px);
-  margin-bottom: clamp(10px, 2.5vh, 18px);
+  gap: clamp(10px, 2vw, 18px);
+  padding: 0 clamp(4px, 1vw, 12px);
 }
 
 .quiz-back-button {
@@ -337,6 +335,7 @@ body {
   cursor: pointer;
   transition: transform 0.2s ease, opacity 0.2s ease;
   flex-shrink: 0;
+  max-width: 40%;
 }
 
 .quiz-back-button:hover:not(:disabled) {
@@ -351,41 +350,51 @@ body {
 .question-number {
   flex: 1;
   text-align: center;
-  font-size: clamp(1.4rem, 4vw, 1.7rem);
+  font-size: clamp(1.2rem, 3.6vw, 1.6rem);
   font-weight: 800;
   color: #2b173d;
   background: rgba(255, 217, 61, 0.95);
-  padding: 10px 22px;
+  padding: clamp(8px, 1.8vh, 14px) clamp(16px, 4vw, 28px);
   border-radius: 999px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  position: relative;
+  margin: 0 auto;
+}
+
+.question-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(12px, 3vh, 20px);
+  width: 100%;
 }
 
 .question-image {
-  width: min(100%, 340px);
+  width: min(100%, 360px);
   height: auto;
   object-fit: contain;
-  margin: 0 auto 18px;
+  margin: 0 auto;
   display: block;
-  border-radius: 8px;
+  border-radius: 12px;
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
 }
 
 .question {
-  font-size: clamp(1.2rem, 4vw, 1.45rem);
+  font-size: clamp(1.2rem, 3.5vw, 1.6rem);
   font-weight: 700;
   color: #000;
-  line-height: 1.3;
+  line-height: 1.35;
   text-align: center;
-  margin: 10px 0 8px;
+  padding: 0 clamp(12px, 4vw, 24px);
 }
 
 .choices-container {
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: 12px;
+  gap: clamp(10px, 2vh, 18px);
   width: 100%;
-  max-width: 440px;
-  margin-bottom: 24px;
+  max-width: 520px;
+  margin-bottom: clamp(18px, 5vh, 28px);
   position: relative;
   z-index: 2;
 }
@@ -397,9 +406,9 @@ body {
 }
 
 .choice {
-  font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+  font-size: clamp(0.95rem, 2.4vw, 1.1rem);
   font-weight: 600;
-  padding: 18px 8px;
+  padding: clamp(14px, 3vh, 20px) clamp(10px, 3vw, 16px);
   background: #fff;
   color: #333;
   border: none;
@@ -410,7 +419,7 @@ body {
   width: 100%;
   text-align: center;
   line-height: 1.3;
-  min-height: 55px;
+  min-height: clamp(52px, 8vh, 70px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -430,19 +439,19 @@ body {
 
 .form-card {
   width: 100%;
-  max-width: 320px;
+  max-width: 420px;
   margin: 0 auto;
-  padding: 20px;
+  padding: clamp(20px, 4vh, 28px) clamp(18px, 4vw, 28px);
   background: #ffffffee;
   border-radius: 20px;
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.22);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: clamp(16px, 3vh, 26px);
 }
 
 .form-card__title {
-  font-size: 1.3rem;
+  font-size: clamp(1.2rem, 3.6vw, 1.6rem);
   font-weight: 800;
   text-align: center;
   color: #2b173d;
@@ -451,13 +460,12 @@ body {
 
 
 .form-card__image {
-  width: 220px;
+  width: clamp(180px, 45vw, 260px);
   max-width: 100%;
   height: auto;
   align-self: center;
   border-radius: 16px;
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.22);
-  margin-bottom: 12px;
 }
 
 
@@ -538,72 +546,67 @@ body {
   padding: 16px 24px;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 480px) {
+  .wrapper {
+    padding: clamp(24px, 9vh, 36px) clamp(12px, 5vw, 18px) clamp(18px, 6vh, 28px);
+    max-width: 100%;
+  }
+
   .quiz-container {
     width: 100%;
-    padding: 14px 0 22px;
-    margin-top: 6px;
+    padding: clamp(28px, 10vh, 44px) 0 clamp(18px, 5vh, 26px);
+    gap: clamp(12px, 4vh, 18px);
   }
 
   .quiz-nav {
     max-width: 100%;
-    padding-top: 12px;
-    margin-bottom: 10px;
+    padding: 0 clamp(4px, 2vw, 10px);
   }
 
   .quiz-back-button {
     padding: 6px 14px;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
   }
 
   .question-number {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     padding: 8px 14px;
   }
 
   .question {
-    font-size: 1.1rem;
-    margin: 16px 0 8px;
+    font-size: 1.05rem;
+    padding: 0 clamp(12px, 6vw, 24px);
   }
 
   .question-image {
-    width: 100%;
-    max-width: 280px;
+    max-width: 250px;
+  }
+
+  .choices-container {
+    gap: 12px;
   }
 
   .choice {
     font-size: 0.95rem;
-    padding: 14px 10px;
+    padding: 14px 12px;
   }
 
   .quiz-container--form {
-    max-width: 92%;
-    padding: 18px 14px 24px;
-    gap: 12px;
+    max-width: 100%;
+    padding: clamp(36px, 12vh, 60px) clamp(14px, 6vw, 24px) clamp(22px, 6vh, 32px);
   }
 
   .form-card {
-    max-width: 320px;
-    padding: 16px;
+    max-width: 340px;
   }
 
   .form-card__image {
-    width: 160px;
-  }
-
-  .form-label,
-  .form-consent {
-    font-size: 0.9rem;
-  }
-
-  .form-input {
-    font-size: 0.95rem;
+    width: clamp(160px, 50vw, 210px);
   }
 
   .submit-button {
     max-width: 100%;
     font-size: 1rem;
-    padding: 14px 20px;
   }
 }
 
