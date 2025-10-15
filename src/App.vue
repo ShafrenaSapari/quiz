@@ -296,7 +296,7 @@ body {
   width: min(100%, 420px);
   display: flex;
   flex-direction: column;
-  padding: 30px 0 30px;
+  padding: 45px 0 30px;
   margin: 0 auto;
   align-items: center;
   flex-grow: 1;
@@ -611,6 +611,27 @@ body {
     max-width: 100%;
     font-size: 1rem;
     padding: 14px 20px;
+  }
+}
+
+@media (max-width: 520px) {
+  .wrapper {
+    padding-top: 28px;
+  }
+
+  .quiz-container {
+    padding: 28px 0 28px;
+  }
+
+  .quiz-nav {
+    padding-top: 18px;
+    margin-bottom: 16px;
+  }
+}
+
+@media (max-height: 780px) {
+  .quiz-container {
+    padding-top: 24px;
   }
 }
 
