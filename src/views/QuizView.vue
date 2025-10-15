@@ -147,6 +147,7 @@ async function submitForm() {
   <div v-else class="quiz-container quiz-container--form">
     <form class="form-card" @submit.prevent="submitForm">
       <img :src="endingImage" alt="Quiz wrap-up" class="form-card__image" />
+      <h2 class="form-card__title">Share your details to learn about your kuih-nomics!</h2>
       <div class="form-group">
         <label class="form-label" for="quiz-name">Name</label>
         <input
