@@ -175,7 +175,7 @@ body {
   width: 100%;
   min-height: 100svh;
   text-align: center;
-  padding: 35px 16px 36px;
+  padding: clamp(20px, 6vh, 40px) clamp(16px, 6vw, 32px) clamp(24px, 8vh, 48px);
   background: none;
   border: none;
   box-shadow: none;
@@ -296,7 +296,7 @@ body {
   width: min(100%, 420px);
   display: flex;
   flex-direction: column;
-  padding: 45px 0 30px;
+  padding: clamp(36px, 12vh, 84px) 0 clamp(16px, 5vh, 28px);
   margin: 0 auto;
   align-items: center;
   flex-grow: 1;
@@ -310,7 +310,7 @@ body {
   width: 100%;
   max-width: 360px;
   gap: 14px;
-  padding: 18px 18px 26px;
+  padding: 27px 18px 26px;
   align-items: center;
   justify-content: center;
 }
@@ -320,11 +320,10 @@ body {
   width: 100%;
   max-width: 440px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  position: relative;
-  padding-top: 18px;
-  margin-bottom: 18px;
+  gap: 12px;
+  padding-top: clamp(10px, 2.5vh, 18px);
+  margin-bottom: clamp(10px, 2.5vh, 18px);
 }
 
 .quiz-back-button {
@@ -337,9 +336,7 @@ body {
   font-size: 0.95rem;
   cursor: pointer;
   transition: transform 0.2s ease, opacity 0.2s ease;
-  position: absolute;
-  left: 0;
-  top: 18px;
+  flex-shrink: 0;
 }
 
 .quiz-back-button:hover:not(:disabled) {
@@ -352,6 +349,8 @@ body {
 }
 
 .question-number {
+  flex: 1;
+  text-align: center;
   font-size: clamp(1.4rem, 4vw, 1.7rem);
   font-weight: 800;
   color: #2b173d;
@@ -359,7 +358,6 @@ body {
   padding: 10px 22px;
   border-radius: 999px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-  margin: 0;
 }
 
 .question-image {
@@ -541,31 +539,26 @@ body {
 }
 
 @media (max-width: 400px) {
-  .wrapper {
-    padding: 30px 12px 28px;
-  }
-
   .quiz-container {
     width: 100%;
-    padding: 20px 0 24px;
+    padding: 14px 0 22px;
     margin-top: 6px;
   }
 
   .quiz-nav {
     max-width: 100%;
-    padding-top: 20px;
-    margin-bottom: 14px;
+    padding-top: 12px;
+    margin-bottom: 10px;
   }
 
   .quiz-back-button {
     padding: 6px 14px;
     font-size: 0.9rem;
-    top: 20px;
   }
 
   .question-number {
-    font-size: 1.15rem;
-    padding: 8px 16px;
+    font-size: 1.1rem;
+    padding: 8px 14px;
   }
 
   .question {
@@ -611,27 +604,6 @@ body {
     max-width: 100%;
     font-size: 1rem;
     padding: 14px 20px;
-  }
-}
-
-@media (max-width: 520px) {
-  .wrapper {
-    padding-top: 28px;
-  }
-
-  .quiz-container {
-    padding: 28px 0 28px;
-  }
-
-  .quiz-nav {
-    padding-top: 18px;
-    margin-bottom: 16px;
-  }
-}
-
-@media (max-height: 780px) {
-  .quiz-container {
-    padding-top: 24px;
   }
 }
 
