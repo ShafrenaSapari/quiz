@@ -95,12 +95,15 @@ body {
 }
 
 .app-footer {
-  position: absolute;
+  position: fixed;
   bottom: 16px;
-  left: 16px;
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 0.9rem;
   color: #000;
   letter-spacing: 0.02em;
+  z-index: 1;
+  text-align: center;
 }
 
 .quiz-app.home-page {
@@ -293,11 +296,13 @@ body {
   width: min(100%, 420px);
   display: flex;
   flex-direction: column;
-  padding: 20px 0 30px;
+  padding: 30px 0 30px;
   margin: 0 auto;
   align-items: center;
   flex-grow: 1;
   min-height: 0;
+  position: relative;
+  z-index: 2;
 }
 
 
@@ -383,6 +388,8 @@ body {
   width: 100%;
   max-width: 440px;
   margin-bottom: 24px;
+  position: relative;
+  z-index: 2;
 }
 
 @media (min-width: 600px) {
