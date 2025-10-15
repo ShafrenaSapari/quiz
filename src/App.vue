@@ -46,7 +46,6 @@ onBeforeUnmount(() => {
       <router-view />
     </div>
 
-    <div v-if="quiz.toastMessage" class="toast">{{ quiz.toastMessage }}</div>
     <footer class="app-footer">© Savviya SG</footer>
   </div>
 </template>
@@ -100,7 +99,7 @@ body {
   bottom: 16px;
   left: 16px;
   font-size: 0.9rem;
-  color: #ffffffcc;
+  color: #000;
   letter-spacing: 0.02em;
 }
 
@@ -173,7 +172,7 @@ body {
   width: 100%;
   min-height: 100svh;
   text-align: center;
-  padding: 28px 16px 36px;
+  padding: 35px 16px 36px;
   background: none;
   border: none;
   box-shadow: none;
@@ -371,7 +370,7 @@ body {
 .question {
   font-size: clamp(1.2rem, 4vw, 1.45rem);
   font-weight: 700;
-  color: #fff;
+  color: #000;
   line-height: 1.3;
   text-align: center;
   margin: 10px 0 8px;
@@ -536,7 +535,7 @@ body {
 
 @media (max-width: 400px) {
   .wrapper {
-    padding: 24px 12px 28px;
+    padding: 30px 12px 28px;
   }
 
   .quiz-container {
