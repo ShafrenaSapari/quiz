@@ -231,6 +231,12 @@ async function submitForm() {
         <p v-if="errors.consent" class="form-error">{{ errors.consent }}</p>
       </div>
 
+      <p class="form-disclaimer">
+        By submitting this form, you consent to be contacted for financial advisory purposes, including updates,
+        events and relevant information. Your data will be kept confidential and used solely for purposes related to
+        our initiatives.
+      </p>
+
       <div class="submit-container">
         <button class="btn whoosh-button submit-button" type="submit" :disabled="submitting">
           {{ submitting ? 'Cooking…' : "Let's masak our kuih!" }}

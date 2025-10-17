@@ -28,7 +28,7 @@ function startQuiz() {
     </header>
     <h2 class="subtitle">What’s Your Financial Flavour?</h2>
     <h3 class="description">
-      Let's masuk dapur and find out which kuih matches<br /> your financial personality!
+      Discover your kuih personality in this fun Singapore heritage quiz! <br />From Ondeh Ondeh to Kueh Lapis, explore the sweet side of your character.
     </h3>
     <button class="btn main-button" @click="startQuiz">Take the quiz</button>
   </div>

@@ -42,9 +42,9 @@ onBeforeUnmount(() => {
   <div :class="rootClasses">
     <div v-if="showStarField" class="star-field"></div>
 
-    <div class="wrapper">
+    <main class="wrapper" role="main">
       <router-view />
-    </div>
+    </main>
 
     <footer class="app-footer">© Savviya SG</footer>
   </div>
@@ -531,6 +531,13 @@ body {
   width: 18px;
   height: 18px;
   accent-color: #ffd93d;
+}
+
+.form-disclaimer {
+  font-size: 0.85rem;
+  color: #4b4b4b;
+  line-height: 1.5;
+  text-align: left;
 }
 
 .submit-container {
